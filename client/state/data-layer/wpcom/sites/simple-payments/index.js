@@ -9,7 +9,7 @@ import {
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_FAIL,
 } from 'state/action-types';
 import { isRequestingSimplePaymentsProductList } from 'state/selectors';
-import { metaKeyToSchemaKeyMap } from 'state/simple-payments/product-list-schema';
+import { metaKeyToSchemaKeyMap } from 'state/simple-payments/product-list/schema';
 import wpcom from 'lib/wp';
 import debug from 'debug';
 
