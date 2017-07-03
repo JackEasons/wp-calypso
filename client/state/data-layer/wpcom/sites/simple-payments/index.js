@@ -9,7 +9,7 @@ import {
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_FAIL,
 } from 'state/action-types';
 // import { isRequestingMedia } from 'state/selectors';
-// import { metaKeyToSchemaKeyMap } from 'state/simple-payments/product-list-schema';
+import { metaKeyToSchemaKeyMap } from 'state/simple-payments/product-list-schema';
 import wpcom from 'lib/wp';
 import debug from 'debug';
 
@@ -48,12 +48,12 @@ function failProductListRequest( siteId, err ) {
 	};
 }
 
-// function reduceMetadata( previous, current ) {
-// 	if ( metaKeyToSchemaKeyMap[ current.key ] ) {
-// 		previous[ current.key ] = current.value;
-// 	}
-// 	return previous;
-// }
+function reduceMetadata( previous, current ) {
+	if ( metaKeyToSchemaKeyMap[ current.key ] ) {
+		previous[ metaKeyToSchemaKeyMap[ current.key ] ] = current.value;
+	}
+	return previous;
+}
 
 function sanitizeProducts( products ) {
 	return products.map( product => Object.assign(
@@ -62,7 +62,7 @@ function sanitizeProducts( products ) {
 			content: product.content,
 			title: product.title
 		},
-		{ metadata: product.metadata }//.reduce( reduceMetadata, {} )
+		product.metadata.reduce( reduceMetadata, {} )
 	) );
 }
 
