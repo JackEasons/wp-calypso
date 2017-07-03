@@ -8,7 +8,7 @@ import {
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_SUCCESS,
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_FAIL,
 } from 'state/action-types';
-// import { isRequestingMedia } from 'state/selectors';
+import { isRequestingSimplePaymentsProductList } from 'state/selectors';
 import { metaKeyToSchemaKeyMap } from 'state/simple-payments/product-list-schema';
 import wpcom from 'lib/wp';
 import debug from 'debug';
@@ -73,10 +73,10 @@ function sanitizeProducts( products ) {
  * @param  {Object}  action Action object
  * @return {Promise}        Promise
  */
-export function requestSimplePaymentsProducts( { dispatch }, { siteId } ) {
-	// if ( isRequestingMedia( getState(), siteId, query ) ) {
-	// 	return;
-	// }
+export function requestSimplePaymentsProducts( { dispatch, getState }, { siteId } ) {
+	if ( isRequestingSimplePaymentsProductList( getState(), siteId ) ) {
+		return;
+	}
 
 	dispatch( requestingProductList( siteId ) );
 	log( 'Request product list for site %d using query %o', siteId );
