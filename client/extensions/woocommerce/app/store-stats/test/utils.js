@@ -9,7 +9,8 @@ import { moment } from 'i18n-calypso';
  */
 import {
 	calculateDelta,
-	getQueryDate
+	formatValue,
+	getQueryDate,
 } from '../utils';
 import { UNITS } from '../constants';
 
@@ -117,5 +118,23 @@ describe( 'getQueryDate', () => {
 		const queryDate = getQueryDate( context );
 		const todayShouldBe = moment().subtract( quantity * 2, 'weeks' ).format( 'YYYY-MM-DD' );
 		assert.strictEqual( queryDate, todayShouldBe );
+	} );
+} );
+
+describe( 'calculateDelta', () => {
+	it( 'should return a correctly formatted currency', () => {
+		const response = formatValue( 12.34, 'currency' );
+		assert.isString( response );
+		assert.strictEqual( response, '$12.34' );
+	} );
+	it( 'should return a correctly formatted number to 2 decimals', () => {
+		const response = formatValue( 12.3456, 'number' );
+		assert.isNumber( response );
+		assert.strictEqual( response, 12.35 );
+	} );
+	it( 'should return a correctly formatted string', () => {
+		const response = formatValue( 'string', 'text' );
+		assert.isString( response );
+		assert.strictEqual( response, 'string' );
 	} );
 } );
