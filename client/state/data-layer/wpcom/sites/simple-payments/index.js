@@ -92,7 +92,7 @@ export function requestSimplePaymentsProducts( { dispatch, getState }, { siteId 
 	}
 
 	dispatch( requestingProductList( siteId ) );
-	log( 'Request product list for site %d using query %o', siteId );
+	log( 'Request product list for site %d.', siteId );
 
 	return wpcom
 		.site( siteId )
