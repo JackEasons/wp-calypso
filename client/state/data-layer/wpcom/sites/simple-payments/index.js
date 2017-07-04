@@ -98,6 +98,12 @@ export function requestSimplePaymentsProducts( { dispatch, getState }, { siteId 
 		.catch( err => dispatch( failProductListRequest( siteId, err ) ) );
 }
 
+/**
+ * Issues an API request to add a new product
+ * @param {Object} store Redux store
+ * @param {Object} action Action object
+ * @return {Promise} Promise
+ */
 export function requestSimplePaymentsProductAdd( { dispatch }, action ) {
 	return wpcom
 		.site( action.siteId )
