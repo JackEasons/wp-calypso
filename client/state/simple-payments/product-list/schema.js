@@ -1,7 +1,7 @@
 /**
  * These are the parameters kept in metadata (custom fields)
  */
-const metadataSchema = {
+export const metadataSchema = {
 	currency: { type: 'string', metaKey: 'spay_currency' },
 	price: { type: 'string', metaKey: 'spay_price' },
 	multiple: { type: 'number', metaKey: 'spay_multiple' },

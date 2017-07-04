@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { SIMPLE_PAYMENTS_PRODUCTS_LIST } from 'state/action-types';
+import { SIMPLE_PAYMENTS_PRODUCTS_LIST, SIMPLE_PAYMENTS_PRODUCTS_LIST_ADD } from 'state/action-types';
 import {
 	receiveProductsList,
 	requestingProductList,
@@ -9,7 +9,7 @@ import {
 	failProductListRequest,
 } from 'state/simple-payments/product-list/actions';
 import { isRequestingSimplePaymentsProductList } from 'state/selectors';
-import { metaKeyToSchemaKeyMap } from 'state/simple-payments/product-list/schema';
+import { metaKeyToSchemaKeyMap, metadataSchema } from 'state/simple-payments/product-list/schema';
 import wpcom from 'lib/wp';
 import debug from 'debug';
 
@@ -36,7 +36,7 @@ function reduceMetadata( sanitizedProductAttributes, current ) {
  * @param { array } products raw /posts endpoint response to format
  * @returns { array } sanitized and formatted product list
  */
-function sanitizeProducts( products ) {
+function customPostsToProducts( products ) {
 	return products.map( product => Object.assign(
 		{
 			ID: product.ID,
@@ -45,6 +45,31 @@ function sanitizeProducts( products ) {
 		},
 		product.metadata.reduce( reduceMetadata, {} )
 	) );
+}
+
+/**
+ * Transforms a product definition object into proper custom post type
+ * @param { Object } product action with product payload
+ * @returns { Object } custom post type data
+ */
+function productToCustomPost( product ) {
+	return Object.keys( product ).reduce(
+		function( payload, current ) {
+			if ( metadataSchema[ current ] ) {
+				payload.metadata.push( {
+					key: metadataSchema[ current ].metaKey,
+					value: product[ current ]
+				} );
+			}
+			return payload;
+		},
+		{
+			type: 'jp_pay_product',
+			metadata: [],
+			title: product.title,
+			content: product.description,
+		}
+	);
 }
 
 /**
@@ -66,12 +91,25 @@ export function requestSimplePaymentsProducts( { dispatch, getState }, { siteId 
 		.site( siteId )
 		.postsList( { type: 'jp_pay_product' } )
 		.then( ( { found, posts } ) => {
-			dispatch( receiveProductsList( siteId, found, sanitizeProducts( posts ) ) );
+			dispatch( receiveProductsList( siteId, found, customPostsToProducts( posts ) ) );
 			dispatch( successProductListRequest( siteId ) );
 		}	)
 		.catch( err => dispatch( failProductListRequest( siteId, err ) ) );
 }
 
+export function requestSimplePaymentsProductAdd( { dispatch }, action ) {
+	return wpcom
+		.site( action.siteId )
+		.addPost( productToCustomPost( action ) )
+		.then( ( response ) => {
+			console.log( 'new product', response );
+			// dispatch( receiveProductsList( siteId, found, sanitizeProducts( posts ) ) );
+			// dispatch( successProductListRequest( siteId ) );
+		}	);
+		// .catch( err => dispatch( failProductListRequest( siteId, err ) ) );
+}
+
 export default {
 	[ SIMPLE_PAYMENTS_PRODUCTS_LIST ]: [ requestSimplePaymentsProducts ],
+	[ SIMPLE_PAYMENTS_PRODUCTS_LIST_ADD ]: [ requestSimplePaymentsProductAdd ],
 };
