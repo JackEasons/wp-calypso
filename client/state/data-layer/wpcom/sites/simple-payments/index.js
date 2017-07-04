@@ -47,7 +47,7 @@ function customPostToProduct( product ) {
 	return Object.assign(
 		{
 			ID: product.ID,
-			content: product.content,
+			description: product.content,
 			title: product.title
 		},
 		product.metadata.reduce( reduceMetadata, {} )
