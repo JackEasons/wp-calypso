@@ -48,13 +48,24 @@ function failProductListRequest( siteId, err ) {
 	};
 }
 
-function reduceMetadata( previous, current ) {
+/**
+ * Reduce function for product attributes stored in post metadata
+ * @param { Object }  sanitizedProductAttributes object with all sanitized attributes
+ * @param { Object } current  item from post_meta to process
+ * @returns { Object } sanitizedProductAttributes
+ */
+function reduceMetadata( sanitizedProductAttributes, current ) {
 	if ( metaKeyToSchemaKeyMap[ current.key ] ) {
-		previous[ metaKeyToSchemaKeyMap[ current.key ] ] = current.value;
+		sanitizedProductAttributes[ metaKeyToSchemaKeyMap[ current.key ] ] = current.value;
 	}
-	return previous;
+	return sanitizedProductAttributes;
 }
 
+/**
+ * Formats /posts endpoint response into a product list
+ * @param { array } products raw /posts endpoint response to format
+ * @returns { array } sanitized and formatted product list
+ */
 function sanitizeProducts( products ) {
 	return products.map( product => Object.assign(
 		{

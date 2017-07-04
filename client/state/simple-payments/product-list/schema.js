@@ -1,3 +1,6 @@
+/**
+ * These are the parameters kept in metadata (custom fields)
+ */
 const metadataSchema = {
 	currency: { type: 'string', metaKey: 'spay_currency' },
 	price: { type: 'string', metaKey: 'spay_price' },
@@ -6,6 +9,10 @@ const metadataSchema = {
 	email: { type: 'string', metaKey: 'spay_email' },
 };
 
+/**
+ * Schema of one product stored in custom post type.
+ * @type {{type: string, properties: *}}
+ */
 const productSchema = {
 	type: 'object',
 	properties: Object.assign(
@@ -25,6 +32,10 @@ const productListSchema = {
 	},
 };
 
+/**
+ * Map that maps custom field keys to corresponding keys in redux representation of a product
+ * @type { Object }
+ */
 export const metaKeyToSchemaKeyMap = Object.keys( metadataSchema ).reduce( ( prev, curr ) => {
 	prev[ metadataSchema[ curr ].metaKey ] = curr;
 	return prev;
