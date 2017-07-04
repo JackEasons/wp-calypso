@@ -1,13 +1,19 @@
 /**
  * Internal dependencies
  */
-import { SIMPLE_PAYMENTS_PRODUCTS_LIST, SIMPLE_PAYMENTS_PRODUCTS_LIST_ADD, SIMPLE_PAYMENTS_PRODUCTS_LIST_EDIT } from 'state/action-types';
+import {
+	SIMPLE_PAYMENTS_PRODUCTS_LIST,
+	SIMPLE_PAYMENTS_PRODUCTS_LIST_ADD,
+	SIMPLE_PAYMENTS_PRODUCTS_LIST_EDIT,
+	SIMPLE_PAYMENTS_PRODUCTS_LIST_DELETE,
+} from 'state/action-types';
 import {
 	receiveProductsList,
 	requestingProductList,
 	successProductListRequest,
 	failProductListRequest,
 	receiveUpdateProduct,
+	receiveDeleteProduct,
 } from 'state/simple-payments/product-list/actions';
 import { isRequestingSimplePaymentsProductList } from 'state/selectors';
 import { metaKeyToSchemaKeyMap, metadataSchema } from 'state/simple-payments/product-list/schema';
@@ -90,7 +96,10 @@ export function requestSimplePaymentsProducts( { dispatch, getState }, { siteId 
 
 	return wpcom
 		.site( siteId )
-		.postsList( { type: 'jp_pay_product' } )
+		.postsList( {
+			type: 'jp_pay_product',
+			status: 'publish'
+		} )
 		.then( ( { found, posts } ) => {
 			dispatch( receiveProductsList( siteId, found, posts.map( customPostToProduct ) ) );
 			dispatch( successProductListRequest( siteId ) );
@@ -129,8 +138,24 @@ export function requestSimplePaymentsProductEdit( { dispatch }, action ) {
 		} );
 }
 
+/**
+ * Issues an API request to delete a product
+ * @param {Object} store Redux store
+ * @param {Object} action Action object
+ * @return {Promise} Promise
+ */
+export function requestSimplePaymentsProductDelete( { dispatch }, action ) {
+	return wpcom
+		.site( action.siteId )
+		.deletePost( action.postId )
+		.then( ( deletedProduct ) => {
+			dispatch( receiveDeleteProduct( action.siteId, deletedProduct.ID ) );
+		} );
+}
+
 export default {
 	[ SIMPLE_PAYMENTS_PRODUCTS_LIST ]: [ requestSimplePaymentsProducts ],
 	[ SIMPLE_PAYMENTS_PRODUCTS_LIST_ADD ]: [ requestSimplePaymentsProductAdd ],
 	[ SIMPLE_PAYMENTS_PRODUCTS_LIST_EDIT ]: [ requestSimplePaymentsProductEdit ],
+	[ SIMPLE_PAYMENTS_PRODUCTS_LIST_DELETE ]: [ requestSimplePaymentsProductDelete ],
 };

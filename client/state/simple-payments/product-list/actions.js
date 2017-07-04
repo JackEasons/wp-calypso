@@ -7,6 +7,7 @@ import {
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_SUCCESS,
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_FAIL,
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_RECEIVE_UPDATE,
+	SIMPLE_PAYMENTS_PRODUCTS_LIST_RECEIVE_DELETE,
 } from 'state/action-types';
 
 export function receiveProductsList( siteId, found, posts ) {
@@ -44,5 +45,13 @@ export function receiveUpdateProduct( siteId, product ) {
 		siteId,
 		type: SIMPLE_PAYMENTS_PRODUCTS_LIST_RECEIVE_UPDATE,
 		product
+	};
+}
+
+export function receiveDeleteProduct( siteId, productId ) {
+	return {
+		siteId,
+		productId,
+		type: SIMPLE_PAYMENTS_PRODUCTS_LIST_RECEIVE_DELETE,
 	};
 }
