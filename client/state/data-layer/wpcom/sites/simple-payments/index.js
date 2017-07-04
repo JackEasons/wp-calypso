@@ -7,6 +7,7 @@ import {
 	requestingProductList,
 	successProductListRequest,
 	failProductListRequest,
+	receiveUpdateProduct,
 } from 'state/simple-payments/product-list/actions';
 import { isRequestingSimplePaymentsProductList } from 'state/selectors';
 import { metaKeyToSchemaKeyMap, metadataSchema } from 'state/simple-payments/product-list/schema';
@@ -100,13 +101,10 @@ export function requestSimplePaymentsProducts( { dispatch, getState }, { siteId 
 export function requestSimplePaymentsProductAdd( { dispatch }, action ) {
 	return wpcom
 		.site( action.siteId )
-		.addPost( productToCustomPost( action ) )
-		.then( ( response ) => {
-			console.log( 'new product', response );
-			// dispatch( receiveProductsList( siteId, found, sanitizeProducts( posts ) ) );
-			// dispatch( successProductListRequest( siteId ) );
-		}	);
-		// .catch( err => dispatch( failProductListRequest( siteId, err ) ) );
+		.addPost( productToCustomPost( action.product ) )
+		.then( ( newProduct ) => {
+			dispatch( receiveUpdateProduct( action.siteId, productToCustomPost( newProduct ) ) );
+		} );
 }
 
 export default {

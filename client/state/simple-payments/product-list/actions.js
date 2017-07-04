@@ -6,6 +6,7 @@ import {
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_REQUESTING,
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_SUCCESS,
 	SIMPLE_PAYMENTS_PRODUCTS_LIST_FAIL,
+	SIMPLE_PAYMENTS_PRODUCTS_LIST_RECEIVE_UPDATE,
 } from 'state/action-types';
 
 export function receiveProductsList( siteId, found, posts ) {
@@ -35,5 +36,13 @@ export function failProductListRequest( siteId, err ) {
 		siteId,
 		type: SIMPLE_PAYMENTS_PRODUCTS_LIST_FAIL,
 		err
+	};
+}
+
+export function receiveUpdateProduct( siteId, product ) {
+	return {
+		siteId,
+		type: SIMPLE_PAYMENTS_PRODUCTS_LIST_RECEIVE_UPDATE,
+		product
 	};
 }
