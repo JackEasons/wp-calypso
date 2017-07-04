@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { SIMPLE_PAYMENTS_PRODUCTS_LIST, SIMPLE_PAYMENTS_PRODUCTS_LIST_ADD } from 'state/action-types';
+import { SIMPLE_PAYMENTS_PRODUCTS_LIST, SIMPLE_PAYMENTS_PRODUCTS_LIST_ADD, SIMPLE_PAYMENTS_PRODUCTS_LIST_EDIT } from 'state/action-types';
 import {
 	receiveProductsList,
 	requestingProductList,
@@ -34,18 +34,18 @@ function reduceMetadata( sanitizedProductAttributes, current ) {
 
 /**
  * Formats /posts endpoint response into a product list
- * @param { array } products raw /posts endpoint response to format
- * @returns { array } sanitized and formatted product list
+ * @param { Object } product raw /post endpoint response to format
+ * @returns { Object } sanitized and formatted product
  */
-function customPostsToProducts( products ) {
-	return products.map( product => Object.assign(
+function customPostToProduct( product ) {
+	return Object.assign(
 		{
 			ID: product.ID,
 			content: product.content,
 			title: product.title
 		},
 		product.metadata.reduce( reduceMetadata, {} )
-	) );
+	);
 }
 
 /**
@@ -92,7 +92,7 @@ export function requestSimplePaymentsProducts( { dispatch, getState }, { siteId 
 		.site( siteId )
 		.postsList( { type: 'jp_pay_product' } )
 		.then( ( { found, posts } ) => {
-			dispatch( receiveProductsList( siteId, found, customPostsToProducts( posts ) ) );
+			dispatch( receiveProductsList( siteId, found, posts.map( customPostToProduct ) ) );
 			dispatch( successProductListRequest( siteId ) );
 		}	)
 		.catch( err => dispatch( failProductListRequest( siteId, err ) ) );
@@ -109,11 +109,28 @@ export function requestSimplePaymentsProductAdd( { dispatch }, action ) {
 		.site( action.siteId )
 		.addPost( productToCustomPost( action.product ) )
 		.then( ( newProduct ) => {
-			dispatch( receiveUpdateProduct( action.siteId, productToCustomPost( newProduct ) ) );
+			dispatch( receiveUpdateProduct( action.siteId, customPostToProduct( newProduct ) ) );
+		} );
+}
+
+/**
+ * Issues an API request to edit a product
+ * @param {Object} store Redux store
+ * @param {Object} action Action object
+ * @return {Promise} Promise
+ */
+export function requestSimplePaymentsProductEdit( { dispatch }, action ) {
+	return wpcom
+		.site( action.siteId )
+		.post( action.postId )
+		.update( productToCustomPost( action.product ) )
+		.then( ( newProduct ) => {
+			dispatch( receiveUpdateProduct( action.siteId, customPostToProduct( newProduct ) ) );
 		} );
 }
 
 export default {
 	[ SIMPLE_PAYMENTS_PRODUCTS_LIST ]: [ requestSimplePaymentsProducts ],
 	[ SIMPLE_PAYMENTS_PRODUCTS_LIST_ADD ]: [ requestSimplePaymentsProductAdd ],
+	[ SIMPLE_PAYMENTS_PRODUCTS_LIST_EDIT ]: [ requestSimplePaymentsProductEdit ],
 };
