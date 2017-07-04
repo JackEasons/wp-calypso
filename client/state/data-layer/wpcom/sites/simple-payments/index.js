@@ -1,13 +1,13 @@
 /**
  * Internal dependencies
  */
+import { SIMPLE_PAYMENTS_PRODUCTS_LIST } from 'state/action-types';
 import {
-	SIMPLE_PAYMENTS_PRODUCTS_LIST,
-	SIMPLE_PAYMENTS_PRODUCTS_LIST_RECEIVE,
-	SIMPLE_PAYMENTS_PRODUCTS_LIST_REQUESTING,
-	SIMPLE_PAYMENTS_PRODUCTS_LIST_SUCCESS,
-	SIMPLE_PAYMENTS_PRODUCTS_LIST_FAIL,
-} from 'state/action-types';
+	receiveProductsList,
+	requestingProductList,
+	successProductListRequest,
+	failProductListRequest,
+} from 'state/simple-payments/product-list/actions';
 import { isRequestingSimplePaymentsProductList } from 'state/selectors';
 import { metaKeyToSchemaKeyMap } from 'state/simple-payments/product-list/schema';
 import wpcom from 'lib/wp';
@@ -17,36 +17,6 @@ import debug from 'debug';
  * Module variables
  */
 const log = debug( 'calypso:middleware-simple-payments' );
-
-function receiveProductsList( siteId, found, posts ) {
-	return {
-		type: SIMPLE_PAYMENTS_PRODUCTS_LIST_RECEIVE,
-		siteId,
-		products: posts,
-	};
-}
-
-function requestingProductList( siteId ) {
-	return {
-		type: SIMPLE_PAYMENTS_PRODUCTS_LIST_REQUESTING,
-		siteId
-	};
-}
-
-function successProductListRequest( siteId ) {
-	return {
-		siteId,
-		type: SIMPLE_PAYMENTS_PRODUCTS_LIST_SUCCESS
-	};
-}
-
-function failProductListRequest( siteId, err ) {
-	return {
-		siteId,
-		type: SIMPLE_PAYMENTS_PRODUCTS_LIST_FAIL,
-		err
-	};
-}
 
 /**
  * Reduce function for product attributes stored in post metadata
