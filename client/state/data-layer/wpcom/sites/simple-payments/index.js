@@ -131,7 +131,7 @@ export function requestSimplePaymentsProductAdd( { dispatch }, action ) {
 export function requestSimplePaymentsProductEdit( { dispatch }, action ) {
 	return wpcom
 		.site( action.siteId )
-		.post( action.postId )
+		.post( action.productId )
 		.update( productToCustomPost( action.product ) )
 		.then( ( newProduct ) => {
 			dispatch( receiveUpdateProduct( action.siteId, customPostToProduct( newProduct ) ) );
@@ -147,7 +147,7 @@ export function requestSimplePaymentsProductEdit( { dispatch }, action ) {
 export function requestSimplePaymentsProductDelete( { dispatch }, action ) {
 	return wpcom
 		.site( action.siteId )
-		.deletePost( action.postId )
+		.deletePost( action.productId )
 		.then( ( deletedProduct ) => {
 			dispatch( receiveDeleteProduct( action.siteId, deletedProduct.ID ) );
 		} );
