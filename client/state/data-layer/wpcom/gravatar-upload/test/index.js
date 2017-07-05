@@ -64,6 +64,20 @@ describe( '#announceSuccess()', () => {
 		} );
 	} );
 
+	it( 'dispatches a failure action if `success` was not set', () => {
+		const action = {
+			type: 'DUMMY_ACTION',
+			file: 'file',
+			email: 'email',
+		};
+		const dispatch = spy();
+
+		announceSuccess( { dispatch }, action, noop, {} );
+
+		expect( dispatch ).to.have.been.calledOnce;
+		expect( dispatch ).to.have.been.calledWith( sinon.match( { type: GRAVATAR_UPLOAD_REQUEST_FAILURE } ) );
+	} );
+
 	it( 'dispatches a success action when the file is read', () => {
 		const action = {
 			type: 'DUMMY_ACTION',
