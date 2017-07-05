@@ -4,6 +4,7 @@
 import { renderWithReduxStore } from 'lib/react-helpers';
 import React from 'react';
 import page from 'page';
+import { includes } from 'lodash';
 
 /**
  * Internal dependencies
@@ -14,7 +15,7 @@ import controller from 'my-sites/controller';
 
 export const isStatusValid = status => {
 	const validStatuses = [ 'pending', 'approved', 'spam', 'trash', 'all' ];
-	return validStatuses.indexOf( status ) !== -1;
+	return includes( validStatuses, status );
 };
 
 export const getRedirect = ( status, siteSlug ) => {
