@@ -17,18 +17,18 @@ export const isStatusValid = status => {
 	return validStatuses.indexOf( status ) !== -1;
 };
 
-export const getRedirect = ( status, domain ) => {
+export const getRedirect = ( status, siteSlug ) => {
 	const statusValidity = isStatusValid( status );
-	if ( status === domain ) {
-		return '/comments/pending/' + domain;
+	if ( status === siteSlug ) {
+		return '/comments/pending/' + siteSlug;
 	}
-	if ( ! statusValidity && ! domain ) {
+	if ( ! statusValidity && ! siteSlug ) {
 		return '/comments';
 	}
-	if ( ! statusValidity && domain ) {
-		return '/comments/pending/' + domain;
+	if ( ! statusValidity && siteSlug ) {
+		return '/comments/pending/' + siteSlug;
 	}
-	if ( statusValidity && ! domain ) {
+	if ( statusValidity && ! siteSlug ) {
 		return '/comments/' + status;
 	}
 	return false;
@@ -36,8 +36,8 @@ export const getRedirect = ( status, domain ) => {
 
 export const comments = function( context, next ) {
 	const { status } = context.params;
-	const domain = route.getSiteFragment( context.path );
-	const redirect = getRedirect( status, domain );
+	const siteSlug = route.getSiteFragment( context.path );
+	const redirect = getRedirect( status, siteSlug );
 
 	if ( redirect ) {
 		return page.redirect( redirect );
@@ -48,7 +48,7 @@ export const comments = function( context, next ) {
 	renderWithReduxStore(
 		<CommentsManagement
 			basePath={ context.path }
-			siteSlug={ domain }
+			siteSlug={ siteSlug }
 			status={ 'pending' === status ? 'unapproved' : status }
 		/>,
 		'primary',
@@ -58,8 +58,8 @@ export const comments = function( context, next ) {
 
 export const sites = function( context, next ) {
 	const { status } = context.params;
-	const domain = route.getSiteFragment( context.path );
-	const redirect = getRedirect( status, domain );
+	const siteSlug = route.getSiteFragment( context.path );
+	const redirect = getRedirect( status, siteSlug );
 
 	if ( redirect && '/comments/' + status !== redirect ) {
 		return page.redirect( redirect );

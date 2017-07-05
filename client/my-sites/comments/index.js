@@ -22,7 +22,7 @@ export default function() {
 			sites,
 		);
 
-		page( '/comments/:status/:domain',
+		page( '/comments/:status/:siteSlug',
 			controller.siteSelection,
 			comments
 		);
