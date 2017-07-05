@@ -56,7 +56,7 @@ export function completePluginUpload( siteId, pluginId ) {
 }
 
 /**
- * Set an error from a plugin upload
+ * Set an error from a plugin upload.
  *
  * @param {number} siteId site ID
  * @param {Object} error the error
