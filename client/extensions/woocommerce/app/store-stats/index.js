@@ -168,6 +168,6 @@ export default connect(
 			isWooConnect: isJetpack && isPluginActive( state, siteId, 'woocommerce' ),
 			slug: getSelectedSiteSlug( state ),
 			siteId,
-		}
+		};
 	}
 )( StoreStats );
