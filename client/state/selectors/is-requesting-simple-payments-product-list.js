@@ -12,5 +12,5 @@ import { get } from 'lodash';
  * @return {Boolean}             Whether connection status is currently being requested for that site.
  */
 export default function isRequestingSimplePaymentsProductList( state, siteId ) {
-	return get( state.simplePayments.productList.requesting, siteId, false );
+	return get( state, `simplePayments.productList.requesting.${ siteId }`, false );
 }
