@@ -16,11 +16,7 @@ export const isUploading = createReducer( false, {
 } );
 
 export const tempImage = createReducer( {}, {
-	[ GRAVATAR_UPLOAD_RECEIVE ]: ( state, action ) => {
-		return {
-			src: action.src
-		};
-	}
+	[ GRAVATAR_UPLOAD_RECEIVE ]: ( state, action ) => ( { src: action.src } ),
 } );
 
 export default combineReducers( {
