@@ -10,7 +10,7 @@ import { localize } from 'i18n-calypso';
 import ActivityLogBanner from './index';
 import ProgressBar from 'components/progress-bar';
 
-function SuccessBanner( {
+function ProgressBanner( {
 	moment,
 	percent,
 	status,
@@ -51,4 +51,4 @@ SuccessBanner.propTypes = {
 	timestamp: PropTypes.number.isRequired,
 };
 
-export default localize( SuccessBanner );
+export default localize( ProgressBanner );
