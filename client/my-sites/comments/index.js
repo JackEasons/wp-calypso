@@ -22,9 +22,8 @@ export default function() {
 			sites,
 		);
 
-		page( '/comments/:status/:site',
+		page( '/comments/:status/:domain',
 			controller.siteSelection,
-			controller.navigation,
 			comments
 		);
 	}

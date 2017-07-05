@@ -17,26 +17,38 @@ export const isStatusValid = status => {
 	return validStatuses.indexOf( status ) !== -1;
 };
 
-export const comments = function( context ) {
-	const status = context.params.status;
-	const siteSlug = route.getSiteFragment( context.path );
+export const getRedirect = ( status, domain ) => {
+	const statusValidity = isStatusValid( status );
+	if ( status === domain ) {
+		return '/comments/pending/' + domain;
+	}
+	if ( ! statusValidity && ! domain ) {
+		return '/comments';
+	}
+	if ( ! statusValidity && domain ) {
+		return '/comments/pending/' + domain;
+	}
+	if ( statusValidity && ! domain ) {
+		return '/comments/' + status;
+	}
+	return false;
+};
 
-	if ( ! isStatusValid( status ) && ! siteSlug ) {
-		page.redirect( '/comments' );
+export const comments = function( context, next ) {
+	const { status } = context.params;
+	const domain = route.getSiteFragment( context.path );
+	const redirect = getRedirect( status, domain );
+
+	if ( redirect ) {
+		return page.redirect( redirect );
 	}
 
-	if ( ! isStatusValid( status ) && siteSlug ) {
-		page.redirect( `/comments/pending/${ siteSlug }` );
-	}
-
-	if ( ! siteSlug ) {
-		page.redirect( `/comments/${ status }` );
-	}
+	controller.navigation( context, next );
 
 	renderWithReduxStore(
 		<CommentsManagement
 			basePath={ context.path }
-			siteSlug={ siteSlug }
+			siteSlug={ domain }
 			status={ 'pending' === status ? 'unapproved' : status }
 		/>,
 		'primary',
@@ -44,17 +56,13 @@ export const comments = function( context ) {
 	);
 };
 
-export const sites = function( context ) {
+export const sites = function( context, next ) {
 	const { status } = context.params;
-	const siteSlug = route.getSiteFragment( context.path );
+	const domain = route.getSiteFragment( context.path );
+	const redirect = getRedirect( status, domain );
 
-	if ( status === siteSlug ) {
-		return page.redirect( `/comments/pending/${ siteSlug }` );
+	if ( redirect && '/comments/' + status !== redirect ) {
+		return page.redirect( redirect );
 	}
-
-	if ( ! isStatusValid( status ) ) {
-		return page.redirect( '/comments' );
-	}
-
-	controller.sites( context );
+	controller.sites( context, next );
 };
