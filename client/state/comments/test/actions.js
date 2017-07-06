@@ -14,7 +14,6 @@ import {
 	COMMENTS_REMOVE,
 	COMMENTS_REQUEST,
 	COMMENTS_LIKE,
-	COMMENTS_LIKE_UPDATE,
 	COMMENTS_UNLIKE,
 	COMMENTS_WRITE,
 	COMMENTS_REPLY_WRITE,
@@ -33,7 +32,6 @@ import {
 
 const SITE_ID = 91750058;
 const POST_ID = 287;
-const API_DOMAIN = 'https://public-api.wordpress.com:443';
 
 describe( 'actions', () => {
 	after( () => {
@@ -137,44 +135,7 @@ describe( 'actions', () => {
 				} );
 			} );
 		} );
-
-		it( 'should dispatch correct action when request succeed', () => {
-			const dispatchSpy = sinon.spy();
-
-			nock( API_DOMAIN )
-				.post( '/rest/v1.1/sites/1/comments/1/likes/new', {
-					source: 'reader'
-				} )
-				.reply( 200, {
-					success: true,
-					i_like: true,
-					like_count: 123
-				} );
-
-			const likeThunk = likeComment( 1, 1, 1 );
-			const apiPromise = likeThunk( dispatchSpy );
-
-			expect( dispatchSpy ).to.be.calledWith( {
-				type: COMMENTS_LIKE,
-				siteId: 1,
-				postId: 1,
-				commentId: 1
-			} );
-
-			// since we didn't mock the request and we have disabled requests
-			// we expect this to fail an revert the optimistic update
-			return apiPromise.then( () => {
-				expect( dispatchSpy ).to.be.calledWith( {
-					type: COMMENTS_LIKE_UPDATE,
-					siteId: 1,
-					postId: 1,
-					commentId: 1,
-					iLike: true,
-					likeCount: 123
-				} );
-			} );
-		} );
-	} ); // likeComment
+	} );
 
 	describe( '#unlikeComment()', () => {
 		it( 'should return a comment unlike action', () => {
