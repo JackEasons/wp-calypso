@@ -8,26 +8,17 @@ import {
 	requestSubscribedLists,
 	followList,
 	unfollowList,
-	dismissListNotice,
 } from '../actions';
 import {
 	READER_LIST_DELETE,
-	READER_LIST_DISMISS_NOTICE,
 	READER_LIST_REQUEST,
 	READER_LISTS_RECEIVE,
 	READER_LISTS_REQUEST,
-	READER_LISTS_FOLLOW,
-	READER_LISTS_UNFOLLOW,
+	READER_LIST_FOLLOW,
+	READER_LIST_UNFOLLOW,
 } from 'calypso/state/reader/action-types';
-import useNock from 'calypso/test-helpers/use-nock';
 
 describe( 'actions', () => {
-	const spy = jest.fn();
-
-	afterEach( () => {
-		jest.clearAllMocks();
-	} );
-
 	describe( '#receiveLists()', () => {
 		test( 'should return an action object', () => {
 			const lists = [ { ID: 841, title: 'Hello World', slug: 'hello-world' } ];
@@ -41,109 +32,47 @@ describe( 'actions', () => {
 	} );
 
 	describe( '#requestList()', () => {
-		useNock( ( nock ) => {
-			nock( 'https://public-api.wordpress.com:443' )
-				.get( '/rest/v1.2/read/lists/listowner/listslug' )
-				.reply( 200, {
-					list: {
-						ID: 123,
-						title: 'My test list',
-					},
-				} );
-		} );
+		test( 'should return an action object', () => {
+			const action = requestList( 'pob', 'things-i-like' );
 
-		test( 'should dispatch fetch action when thunk triggered', () => {
-			requestList()( spy );
-
-			expect( spy ).toHaveBeenCalledWith( {
+			expect( action ).toEqual( {
 				type: READER_LIST_REQUEST,
+				listOwner: 'pob',
+				listSlug: 'things-i-like',
 			} );
 		} );
 	} );
 
 	describe( '#requestSubscribedLists()', () => {
-		useNock( ( nock ) => {
-			nock( 'https://public-api.wordpress.com:443' )
-				.persist()
-				.get( '/rest/v1.2/read/lists' )
-				.reply( 200, {
-					found: 2,
-					lists: [
-						{ ID: 841, title: 'Hello World' },
-						{ ID: 413, title: 'Mango & Feijoa' },
-					],
-				} );
-		} );
+		test( 'should return an action object', () => {
+			const action = requestSubscribedLists();
 
-		test( 'should dispatch fetch action when thunk triggered', () => {
-			requestSubscribedLists()( spy );
-
-			expect( spy ).toHaveBeenCalledWith( {
+			expect( action ).toEqual( {
 				type: READER_LISTS_REQUEST,
-			} );
-		} );
-
-		test( 'should dispatch lists receive action when request completes', () => {
-			return requestSubscribedLists()( spy ).then( () => {
-				expect( spy ).toHaveBeenCalledWith( {
-					type: READER_LISTS_RECEIVE,
-					lists: [
-						{ ID: 841, title: 'Hello World' },
-						{ ID: 413, title: 'Mango & Feijoa' },
-					],
-				} );
 			} );
 		} );
 	} );
 
 	describe( '#followList()', () => {
-		useNock( ( nock ) => {
-			nock( 'https://public-api.wordpress.com:443' )
-				.post( '/rest/v1.2/read/lists/restapitests/testlist/follow' )
-				.reply( 200, {
-					following: true,
-				} );
-		} );
+		test( 'should return an action object', () => {
+			const action = followList( 'restapitests', 'testlist' );
 
-		test( 'should dispatch fetch action when thunk triggered', () => {
-			followList( 'restapitests', 'testlist' )( spy );
-
-			expect( spy ).toHaveBeenCalledWith( {
-				type: READER_LISTS_FOLLOW,
-				owner: 'restapitests',
-				slug: 'testlist',
+			expect( action ).toEqual( {
+				type: READER_LIST_FOLLOW,
+				listOwner: 'restapitests',
+				listSlug: 'testlist',
 			} );
 		} );
 	} );
 
 	describe( '#unfollowList()', () => {
-		useNock( ( nock ) => {
-			nock( 'https://public-api.wordpress.com:443' )
-				.post( '/rest/v1.2/read/lists/restapitests/testlist/unfollow' )
-				.reply( 200, {
-					following: false,
-				} );
-		} );
+		test( 'should return an action object', () => {
+			const action = unfollowList( 'restapitests', 'testlist' );
 
-		test( 'should dispatch fetch action when thunk triggered', () => {
-			unfollowList( 'restapitests', 'testlist' )( spy );
-
-			expect( spy ).toHaveBeenCalledWith( {
-				type: READER_LISTS_UNFOLLOW,
-				owner: 'restapitests',
-				slug: 'testlist',
-			} );
-		} );
-	} );
-
-	describe( '#dismissListNotice()', () => {
-		test( 'should dispatch the dismiss action', () => {
-			const listId = 123;
-			dismissListNotice( listId )( spy );
-
-			expect( spy ).toHaveBeenCalledWith( {
-				type: READER_LIST_DISMISS_NOTICE,
-				listId: 123,
+			expect( action ).toEqual( {
+				type: READER_LIST_UNFOLLOW,
+				listOwner: 'restapitests',
+				listSlug: 'testlist',
 			} );
 		} );
 	} );

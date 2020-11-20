@@ -57,7 +57,7 @@ const debug = debugFactory( 'calypso:pages' );
 const SERVER_BASE_PATH = '/public';
 const calypsoEnv = config( 'env_id' );
 
-const staticFiles = [ { path: 'editor.css' }, { path: 'tinymce/skins/wordpress/wp-content.css' } ];
+const staticFiles = [ { path: 'tinymce/skins/wordpress/wp-content.css' } ];
 
 const staticFilesUrls = staticFiles.reduce( ( result, file ) => {
 	if ( ! file.hash ) {
@@ -269,7 +269,8 @@ function setUpLoggedOutRoute( req, res, next ) {
 }
 
 function setUpLoggedInRoute( req, res, next ) {
-	let redirectUrl, start;
+	let redirectUrl;
+	let start;
 
 	res.set( {
 		'X-Frame-Options': 'SAMEORIGIN',

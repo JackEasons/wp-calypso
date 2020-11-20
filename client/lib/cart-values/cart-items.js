@@ -16,7 +16,6 @@ import {
 	merge,
 	reject,
 	some,
-	toLower,
 	uniq,
 } from 'lodash';
 import emailValidator from 'email-validator';
@@ -69,7 +68,6 @@ import {
 	isWpComBloggerPlan,
 } from 'calypso/lib/plans';
 import { getTermDuration } from 'calypso/lib/plans/constants';
-import { shouldShowOfferResetFlow } from 'calypso/lib/plans/config';
 
 /**
  * @typedef { import("./types").CartItemValue} CartItemValue
@@ -167,11 +165,7 @@ export function cartItemShouldReplaceCart( cartItem, cart ) {
 		// adding a Jetpack product should replace the cart
 
 		// Jetpack Offer Reset allows users to purchase multiple Jetpack products at the same time.
-		if ( shouldShowOfferResetFlow() ) {
-			return false;
-		}
-
-		return true;
+		return false;
 	}
 
 	return false;
@@ -747,8 +741,8 @@ export function getGoogleApps( cart ) {
 }
 
 export function googleApps( properties ) {
-	const productSlug = properties.product_slug || GSUITE_BASIC_SLUG,
-		item = domainItem( productSlug, properties.meta ? properties.meta : properties.domain );
+	const productSlug = properties.product_slug || GSUITE_BASIC_SLUG;
+	const item = domainItem( productSlug, properties.meta ? properties.meta : properties.domain );
 
 	return assign( item, { extra: { google_apps_users: properties.users } } );
 }
@@ -1183,7 +1177,7 @@ export function isNextDomainFree( cart, domain = '' ) {
 export function isDomainBundledWithPlan( cart, domain ) {
 	const bundledDomain = get( cart, 'bundled_domain', '' );
 
-	return '' !== bundledDomain && toLower( domain ) === toLower( get( cart, 'bundled_domain', '' ) );
+	return '' !== bundledDomain && ( domain ?? '' ).toLowerCase() === bundledDomain.toLowerCase();
 }
 
 /**
@@ -1202,8 +1196,8 @@ export function isDomainBeingUsedForPlan( cart, domain ) {
 		return false;
 	}
 
-	const domainProducts = getDomainRegistrations( cart ).concat( getDomainMappings( cart ) ),
-		domainProduct = domainProducts.shift() || {};
+	const domainProducts = getDomainRegistrations( cart ).concat( getDomainMappings( cart ) );
+	const domainProduct = domainProducts.shift() || {};
 	const processedDomainInCart = domain === domainProduct.meta;
 	if ( ! processedDomainInCart ) {
 		return false;

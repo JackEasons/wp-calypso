@@ -25,8 +25,6 @@ const NameStep: React.FunctionComponent< LaunchStepProps > = ( { onPrevStep, onN
 		onPrevStep?.();
 	};
 
-	const handleBlur = () => saveTitle();
-
 	return (
 		<LaunchStepContainer>
 			<div className="nux-launch-step__header">
@@ -44,7 +42,7 @@ const NameStep: React.FunctionComponent< LaunchStepProps > = ( { onPrevStep, onN
 						id="nux-launch-step__input"
 						className="nux-launch-step__input"
 						onChange={ updateTitle }
-						onBlur={ handleBlur }
+						onBlur={ saveTitle }
 						value={ title }
 						spellCheck={ false }
 						autoComplete="off"

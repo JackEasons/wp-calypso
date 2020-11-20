@@ -2,15 +2,16 @@
  * External dependencies
  */
 import { useSelect } from '@wordpress/data';
+import type { DomainSuggestions } from '@automattic/data-stores';
 
 /**
- * External dependencies
+ * Internal dependencies
  */
 import { DOMAIN_SUGGESTIONS_STORE } from '../stores';
 import { useDomainSearch } from './';
 
-export function useDomainSuggestion() {
-	const domainSearch = useDomainSearch();
+export function useDomainSuggestion(): DomainSuggestions.DomainSuggestion | undefined {
+	const { domainSearch } = useDomainSearch();
 
 	const suggestion = useSelect(
 		( select ) => {

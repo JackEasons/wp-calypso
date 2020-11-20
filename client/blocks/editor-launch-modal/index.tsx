@@ -3,11 +3,25 @@
  */
 import React from 'react';
 import FocusedLaunchModal from '@automattic/launch';
+import noop from 'lodash/noop';
+import { connect } from 'react-redux';
+import { getSelectedSiteId } from 'calypso/state/ui/selectors';
+import { getCurrentUserLocale } from 'calypso/state/current-user/selectors';
 
-class EditorLaunchModal extends React.Component {
-	render() {
-		return <FocusedLaunchModal></FocusedLaunchModal>;
-	}
+interface Props {
+	siteId: number;
+	locale: string;
 }
 
-export default EditorLaunchModal;
+const EditorLaunchModal: React.FunctionComponent< Props > = ( { siteId, locale } ) => {
+	return <FocusedLaunchModal onClose={ noop } siteId={ siteId } locale={ locale } />;
+};
+
+export default connect( ( state ) => {
+	const siteId = getSelectedSiteId( state ) as number;
+	const locale = getCurrentUserLocale( state );
+	return {
+		siteId,
+		locale,
+	};
+} )( EditorLaunchModal );

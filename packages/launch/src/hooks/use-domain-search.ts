@@ -2,27 +2,33 @@
  * External dependencies
  */
 import { useSelect } from '@wordpress/data';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { useEntityProp } from '@wordpress/core-data';
-import { __ } from '@wordpress/i18n';
-
+import { useDispatch } from '@wordpress/data';
 /**
  * External dependencies
  */
 import { LAUNCH_STORE } from '../stores';
-import { useSite } from './';
+import { useSite, useTitle } from './';
+import { isDefaultSiteTitle } from '../utils';
 
-export function useDomainSearch() {
+export function useDomainSearch(): {
+	domainSearch: string;
+	isLoading: boolean;
+	setDomainSearch: ( search: string ) => void;
+} {
 	const { domainSearch } = useSelect( ( select ) => select( LAUNCH_STORE ).getState() );
-	const [ title ] = useEntityProp( 'root', 'site', 'title' );
-	const { currentDomainName } = useSite();
+	const { title } = useTitle();
+	const { currentDomainName, isLoadingSite } = useSite();
+	const { setDomainSearch } = useDispatch( LAUNCH_STORE );
 
 	let search = domainSearch.trim() || title;
 
-	if ( ! search || search === __( 'Site Title', __i18n_text_domain__ ) ) {
+	if ( ! search || isDefaultSiteTitle( { currentSiteTitle: search, exact: true } ) ) {
 		search = currentDomainName?.split( '.' )[ 0 ] ?? '';
 	}
 
-	return search;
+	return {
+		domainSearch: search,
+		isLoading: isLoadingSite,
+		setDomainSearch,
+	};
 }

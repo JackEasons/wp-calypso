@@ -4,22 +4,28 @@
 // Override Global Vars
 .is-nav-unification {
 	// client/assets/stylesheets/shared/_variables.scss
-	--sidebar-width-max: 200px;
-	--sidebar-width-min: 200px;
+	--sidebar-width-max: 272px;
+	--sidebar-width-min: 272px;
 
 	--color-sidebar-background: #23282d;
 	--color-sidebar-background-rgb: 35, 40, 45;
-	--color-sidebar-menu-hover-background: #32373c;
-	--color-sidebar-menu-hover-background-rgb: rgb( #32373c );
-	--color-sidebar-menu-hover-heading-background: #1a1e23;
-	--color-sidebar-menu-hover: #00b9eb;
+	--color-sidebar-menu-hover-background: #1a1e23;
+	--color-sidebar-menu-hover-background-rgb: rgb( var( --color-sidebar-menu-hover-background ) );
 	--color-sidebar-menu-hover-text: #00b9eb;
 	--color-sidebar-menu-selected-background: #0073aa;
+	--color-sidebar-menu-selected-text: white;
 	--color-sidebar-border: #333333;
 	--color-sidebar-text: #eee;
 	--color-sidebar-text-alternative: #a2aab2;
 	--color-sidebar-gridicon-fill: #a2aab2;
 	--color-sidebar-notice-background: #3c434a;
+
+	--color-sidebar-submenu-background: #32373c;
+	--color-sidebar-submenu-text: #b4b9be;
+	--color-sidebar-submenu-hover-background: transparent;
+	--color-sidebar-submenu-hover-text: #00b9eb;
+	--color-sidebar-submenu-selected-background: transparent;
+	--color-sidebar-submenu-selected-text: white;
 
 	.is-sidebar-collapsed:not( .is-section-reader ):not( .is-section-me ) & {
 		--sidebar-width-max: 36px;
@@ -73,8 +79,8 @@ $font-size: rem( 14px );
 
 			&:hover,
 			&:focus {
-				background-color: var( --color-sidebar-menu-hover-heading-background );
-				color: var( --color-sidebar-menu-hover );
+				background-color: var( --color-sidebar-menu-hover-background );
+				color: var( --color-sidebar-menu-hover-text );
 			}
 
 			&::after {
@@ -107,7 +113,7 @@ $font-size: rem( 14px );
 		}
 
 		.sidebar__expandable-content {
-			background: #32373c;
+			background: var( --color-sidebar-submenu-background );
 			padding: 7px 0 8px;
 
 			.sidebar__menu-link {
@@ -116,18 +122,18 @@ $font-size: rem( 14px );
 				font-size: rem( 13px );
 				line-height: 1.4;
 				font-weight: 400;
-				color: #b4b9be;
+				color: var( --color-sidebar-submenu-text );
 
 				&:hover,
 				&:focus {
-					background-color: transparent;
-					color: var( --color-sidebar-menu-hover );
+					background-color: var( --color-sidebar-submenu-hover-background );
+					color: var( --color-sidebar-submenu-hover-text );
 				}
 			}
 
 			.selected .sidebar__menu-link {
-				background-color: transparent;
-				color: white;
+				background-color: var( --color-sidebar-submenu-selected-background );
+				color: var( --color-sidebar-submenu-selected-text );
 				font-weight: 600;
 			}
 
@@ -141,14 +147,22 @@ $font-size: rem( 14px );
 			margin-right: 8px;
 		}
 
+		img.sidebar__menu-icon {
+			opacity: 0.6;
+		}
+
 		.sidebar__menu-item-parent {
 			&.selected {
 				.sidebar__menu-link {
 					background: var( --color-sidebar-menu-selected-background );
-					color: white;
+					color: var( --color-sidebar-menu-selected-text );
 
 					.sidebar__menu-icon {
-						color: white;
+						color: var( --color-sidebar-menu-selected-text );
+					}
+
+					img.sidebar__menu-icon {
+						opacity: 1;
 					}
 
 					&::after {
@@ -163,7 +177,10 @@ $font-size: rem( 14px );
 		.sidebar__menu-link {
 			&:hover {
 				.sidebar__menu-icon {
-					color: var( --color-sidebar-menu-hover );
+					color: var( --color-sidebar-menu-hover-text );
+				}
+				img.sidebar__menu-icon {
+					opacity: 1;
 				}
 			}
 		}
@@ -186,31 +203,39 @@ $font-size: rem( 14px );
 		// Is toggled open
 		.sidebar__menu.is-toggle-open {
 			.sidebar__heading {
-				background: var( --color-sidebar-menu-hover-heading-background );
+				background: var( --color-sidebar-menu-hover-background );
 
 				&:hover {
 					.sidebar__menu-icon {
-						color: var( --color-sidebar-menu-hover );
+						color: var( --color-sidebar-menu-hover-text );
+					}
+					img.sidebar__menu-icon {
+						opacity: 1;
 					}
 				}
 
 				.sidebar__menu-icon {
 					color: #fff;
 				}
+				img.sidebar__menu-icon {
+					opacity: 1;
+				}
 			}
 			// Is toggled open and selected
 			&.sidebar__menu--selected .sidebar__heading {
 				background: var( --color-sidebar-menu-selected-background );
-				color: white;
+				color: var( --color-sidebar-menu-selected-text );
 
 				.sidebar__menu-icon {
-					color: #fff;
+					color: var( --color-sidebar-menu-selected-text );
+				}
+				img.sidebar__menu-icon {
+					opacity: 1;
 				}
 			}
 		}
 
 		.notice {
-			background-color: var( --color-sidebar-notice-background );
 			/* stylelint-disable-next-line scales/font-weight */
 			font-weight: 300;
 
@@ -230,12 +255,7 @@ $font-size: rem( 14px );
 					width: 18px;
 					height: 18px;
 					border-radius: 50%;
-					background: var( --color-sidebar-gridicon-fill );
 				}
-			}
-
-			.gridicon {
-				fill: var( --color-sidebar-notice-background );
 			}
 
 			.notice__content {
@@ -253,7 +273,7 @@ $font-size: rem( 14px );
 
 	//client/components/site-selector/style.scss
 	.site-selector .site.is-highlighted {
-		background-color: var ( --color-sidebar-menu-hover-background );
+		background-color: var ( --color-sidebar-submenu-background );
 	}
 
 	.site-selector .site.is-highlighted .site__domain,
@@ -287,7 +307,7 @@ $font-size: rem( 14px );
 
 	// client/my-sites/current-site/style.scss
 	.current-site__switch-sites:hover .button.is-borderless:hover {
-		background-color: var( --color-sidebar-menu-hover-heading-background );
+		background-color: var( --color-sidebar-menu-hover-background );
 	}
 
 	.current-site__switch-sites .button.is-borderless {
@@ -388,6 +408,9 @@ $font-size: rem( 14px );
 				.sidebar__menu-icon {
 					color: #fff;
 				}
+				img.sidebar__menu-icon {
+					opacity: 1;
+				}
 			}
 
 			&.is-togglable:not( .is-toggle-open ):hover .sidebar__heading::after {
@@ -460,25 +483,27 @@ $font-size: rem( 14px );
 			}
 		}
 
-		.sidebar__menu.is-togglable:not( .is-toggle-open ):hover {
+		.sidebar__menu.is-togglable:not( .is-toggle-open ).hovered {
+			// .hovered is handled in client/layout/sidebar/expandable.jsx. Needed for repositioning and hover intent.
 			position: relative;
 
 			.sidebar__heading {
-				background-color: var( --color-sidebar-menu-hover-heading-background );
-				color: var( --color-sidebar-menu-hover );
+				background-color: var( --color-sidebar-menu-hover-background );
+				color: var( --color-sidebar-menu-hover-text );
 			}
 
 			// indicator arrow
 			.sidebar__heading::after {
 				display: block;
-				border-right-color: var( --color-sidebar-menu-hover-background );
+				border-right-color: var( --color-sidebar-submenu-background );
 			}
 
 			// flyout content
 			.sidebar__expandable-content {
 				display: block;
-				position: absolute;
 				top: 0;
+				bottom: auto;
+				position: absolute;
 				left: var( --sidebar-width-max );
 				width: 160px;
 
@@ -506,6 +531,11 @@ $font-size: rem( 14px );
 
 			.current-site__switch-sites .button.is-borderless {
 				padding: 11px 8px 11px 38px;
+			}
+
+			.site__home {
+				left: 12px;
+				top: 18px;
 			}
 
 			.current-site__switch-sites .button.is-borderless .gridicon {

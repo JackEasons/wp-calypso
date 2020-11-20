@@ -2,14 +2,13 @@
  * External dependencies
  */
 import * as React from 'react';
-import { useDispatch, useSelect } from '@wordpress/data';
 import { registerPlugin as originalRegisterPlugin, PluginSettings } from '@wordpress/plugins';
+import { useSelect, useDispatch } from '@wordpress/data';
 import FocusedLaunchModal from '@automattic/launch';
 
 /**
  * Internal dependencies
  */
-import { useOnLaunch } from '@automattic/launch';
 import { LAUNCH_STORE } from './stores';
 
 const registerPlugin = ( name: string, settings: Omit< PluginSettings, 'icon' > ) =>
@@ -18,16 +17,27 @@ const registerPlugin = ( name: string, settings: Omit< PluginSettings, 'icon' > 
 
 registerPlugin( 'a8c-editor-editor-focused-launch', {
 	render: function LaunchSidebar() {
-		const { isFocusedLaunchOpen } = useSelect( ( select ) => select( LAUNCH_STORE ).getState() );
-		const { closeFocusedLaunch } = useDispatch( LAUNCH_STORE );
+		const isFocusedLaunchOpen = useSelect( ( select ) =>
+			select( LAUNCH_STORE ).isFocusedLaunchOpen()
+		);
 
-		// handle redirects to checkout / my home after launch
-		useOnLaunch();
+		const { closeFocusedLaunch } = useDispatch( LAUNCH_STORE );
 
 		if ( ! isFocusedLaunchOpen ) {
 			return null;
 		}
 
-		return <FocusedLaunchModal onClose={ closeFocusedLaunch } />;
+		return (
+			<FocusedLaunchModal
+				siteId={ window._currentSiteId }
+				onClose={ closeFocusedLaunch }
+				locale={ document.documentElement.lang }
+				redirectTo={ ( url: string ) => {
+					const origin = 'https://wordpress.com';
+					const path = url.startsWith( '/' ) ? url : `/${ url }`;
+					window.top.location.href = `${ origin }${ path }`;
+				} }
+			/>
+		);
 	},
 } );

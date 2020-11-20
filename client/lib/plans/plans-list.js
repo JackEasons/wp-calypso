@@ -35,6 +35,7 @@ const getDotcomPlanDetails = () => ( {
 			constants.FEATURE_CUSTOM_DOMAIN,
 			constants.FEATURE_EMAIL_LIVE_CHAT_SUPPORT_ALL_DAYS,
 			constants.FEATURE_EMAIL_LIVE_CHAT_SUPPORT_BUSINESS_DAYS,
+			constants.FEATURE_LIVE_CHAT_SUPPORT,
 		] ),
 } );
 
@@ -288,7 +289,7 @@ const getPlanPremiumDetails = () => ( {
 	],
 	getSignupFeatures: ( _, { isMonthlyPricingTest = false } = {} ) =>
 		compact( [
-			isMonthlyPricingTest && constants.FEATURE_EMAIL_LIVE_CHAT_SUPPORT_BUSINESS_DAYS,
+			isMonthlyPricingTest && constants.FEATURE_LIVE_CHAT_SUPPORT,
 			constants.FEATURE_ADVANCED_CUSTOMIZATION,
 			! isMonthlyPricingTest && constants.FEATURE_PREMIUM_THEMES,
 			constants.FEATURE_ALL_PERSONAL_FEATURES,
@@ -405,14 +406,19 @@ const getPlanJetpackSecurityDailyDetails = () => ( {
 	availableFor: ( plan ) =>
 		[ constants.PLAN_JETPACK_FREE, ...constants.JETPACK_LEGACY_PLANS ].includes( plan ),
 	getDescription: () =>
-		getJetpackCROActiveVersion() === 'v2'
-			? translate(
-					'All of the essential Jetpack Security features in one package including Backup, Scan, Anti-spam and more.'
-			  )
-			: translate(
-					'Enjoy the peace of mind of complete site protection. ' +
-						'Great for brochure sites, restaurants, blogs, and resume sites.'
-			  ),
+		( {
+			v2: translate(
+				'All of the essential Jetpack Security features in one package including Backup, Scan, Anti-spam and more.'
+			),
+			i5: translate(
+				'All of the essential Jetpack Security features in one package including Backup, Scan, Anti-spam and more.'
+			),
+		}[ getJetpackCROActiveVersion() ] ||
+		translate(
+			'Enjoy the peace of mind of complete site protection. ' +
+				'Great for brochure sites, restaurants, blogs, and resume sites.'
+		) ),
+
 	getTagline: () => {
 		if ( getJetpackCROActiveVersion() === 'v1' ) {
 			return translate( 'Backup, Scan, and Anti-spam in one package' );
@@ -426,32 +432,37 @@ const getPlanJetpackSecurityDailyDetails = () => ( {
 	},
 	getPlanCompareFeatures: () => [],
 	getPlanCardFeatures: () =>
-		getJetpackCROActiveVersion() === 'v2'
-			? [
-					constants.FEATURE_PRODUCT_BACKUP_DAILY_V2,
-					constants.FEATURE_PRODUCT_SCAN_V2,
-					constants.FEATURE_PRODUCT_ANTISPAM_V2,
-					constants.FEATURE_ACTIVITY_LOG_30_DAYS_V2,
-					constants.FEATURE_VIDEO_HOSTING_V2,
-					constants.FEATURE_SOCIAL_MEDIA_POSTING_V2,
-					constants.FEATURE_SITE_MONETIZATION_V2,
-					constants.FEATURE_GOOGLE_ANALYTICS,
-			  ]
-			: {
-					[ constants.FEATURE_CATEGORY_SECURITY ]: [
-						constants.FEATURE_PRODUCT_BACKUP_DAILY_V2,
-						constants.FEATURE_PRODUCT_SCAN_V2,
-						constants.FEATURE_PRODUCT_ANTISPAM_V2,
-						constants.FEATURE_ACTIVITY_LOG_30_DAYS_V2,
-					],
-					[ constants.FEATURE_CATEGORY_OTHER ]: [
-						constants.FEATURE_VIDEO_HOSTING_V2,
-						constants.FEATURE_SOCIAL_MEDIA_POSTING_V2,
-						constants.FEATURE_COLLECT_PAYMENTS_V2,
-						constants.FEATURE_SITE_MONETIZATION_V2,
-						constants.FEATURE_PRIORITY_SUPPORT_V2,
-					],
-			  },
+		( {
+			v2: [
+				constants.FEATURE_PRODUCT_BACKUP_DAILY_V2,
+				constants.FEATURE_PRODUCT_SCAN_V2,
+				constants.FEATURE_PRODUCT_ANTISPAM_V2,
+				constants.FEATURE_ACTIVITY_LOG_30_DAYS_V2,
+				constants.FEATURE_VIDEO_HOSTING_V2,
+				constants.FEATURE_SOCIAL_MEDIA_POSTING_V2,
+				constants.FEATURE_SITE_MONETIZATION_V2,
+			],
+			i5: [
+				constants.FEATURE_ALL_FREE_FEATURES,
+				constants.FEATURE_PRODUCT_BACKUP_DAILY_V2,
+				constants.FEATURE_PRODUCT_SCAN_DAILY_V2,
+				constants.FEATURE_ANTISPAM_V2,
+			],
+		}[ getJetpackCROActiveVersion() ] || {
+			[ constants.FEATURE_CATEGORY_SECURITY ]: [
+				constants.FEATURE_PRODUCT_BACKUP_DAILY_V2,
+				constants.FEATURE_PRODUCT_SCAN_V2,
+				constants.FEATURE_PRODUCT_ANTISPAM_V2,
+				constants.FEATURE_ACTIVITY_LOG_30_DAYS_V2,
+			],
+			[ constants.FEATURE_CATEGORY_OTHER ]: [
+				constants.FEATURE_VIDEO_HOSTING_V2,
+				constants.FEATURE_SOCIAL_MEDIA_POSTING_V2,
+				constants.FEATURE_COLLECT_PAYMENTS_V2,
+				constants.FEATURE_SITE_MONETIZATION_V2,
+				constants.FEATURE_PRIORITY_SUPPORT_V2,
+			],
+		} ),
 	getSignupFeatures: () => [],
 	getHiddenFeatures: () => [
 		constants.FEATURE_JETPACK_BACKUP_DAILY,
@@ -492,44 +503,55 @@ const getPlanJetpackSecurityRealtimeDetails = () => ( {
 			...constants.JETPACK_LEGACY_PLANS,
 		].includes( plan ),
 	getDescription: () =>
-		getJetpackCROActiveVersion() === 'v2'
-			? translate(
-					'Get next level protection. Includes all essential security tools, but with on-demand scan, real time backup & more.'
-			  )
-			: translate(
-					'Additional security for sites with 24/7 activity. ' +
-						'Recommended for eCommerce stores, news organizations, and online forums.'
-			  ),
+		( {
+			v2: translate(
+				'Get next level protection. Includes all essential security tools, but with on-demand scan, real time backup & more.'
+			),
+			i5: translate(
+				'Get next-level protection with real-time backups, real-time scan and all essential security tools.'
+			),
+		}[ getJetpackCROActiveVersion() ] ||
+		translate(
+			'Additional security for sites with 24/7 activity. ' +
+				'Recommended for eCommerce stores, news organizations, and online forums.'
+		) ),
 	getTagline: () =>
 		getJetpackCROActiveVersion() === 'v2'
 			? translate( 'Always on protection, backs up as you edit' )
 			: translate( 'Best for sites with frequent updates' ),
 	getPlanCompareFeatures: () => [],
 	getPlanCardFeatures: () =>
-		getJetpackCROActiveVersion() === 'v2'
-			? [
-					constants.FEATURE_PLAN_SECURITY_DAILY,
-					constants.FEATURE_PRODUCT_BACKUP_REALTIME_V2,
-					constants.FEATURE_PRODUCT_SCAN_V2_NO_SLIDEOUT,
-					constants.FEATURE_ACTIVITY_LOG_1_YEAR_V2,
-					constants.FEATURE_PREMIUM_THEMES_V2,
-			  ]
-			: {
-					[ constants.FEATURE_CATEGORY_SECURITY ]: [
-						constants.FEATURE_PRODUCT_BACKUP_REALTIME_V2,
-						constants.FEATURE_PRODUCT_SCAN_V2,
-						constants.FEATURE_PRODUCT_ANTISPAM_V2,
-						constants.FEATURE_ACTIVITY_LOG_1_YEAR_V2,
-					],
-					[ constants.FEATURE_CATEGORY_OTHER ]: [
-						constants.FEATURE_PREMIUM_THEMES_V2,
-						constants.FEATURE_VIDEO_HOSTING_V2,
-						constants.FEATURE_SOCIAL_MEDIA_POSTING_V2,
-						constants.FEATURE_COLLECT_PAYMENTS_V2,
-						constants.FEATURE_SITE_MONETIZATION_V2,
-						constants.FEATURE_PRIORITY_SUPPORT_V2,
-					],
-			  },
+		( {
+			v2: [
+				constants.FEATURE_PLAN_SECURITY_DAILY,
+				constants.FEATURE_PRODUCT_BACKUP_REALTIME_V2,
+				constants.FEATURE_PRODUCT_SCAN_V2_NO_SLIDEOUT,
+				constants.FEATURE_ACTIVITY_LOG_1_YEAR_V2,
+				constants.FEATURE_PREMIUM_THEMES_V2,
+			],
+			i5: [
+				constants.FEATURE_PLAN_SECURITY_DAILY,
+				constants.FEATURE_PRODUCT_BACKUP_REALTIME_V2,
+				constants.FEATURE_PRODUCT_SCAN_REALTIME_V2,
+				constants.FEATURE_ACTIVITY_LOG_1_YEAR_V2,
+			],
+		}[ getJetpackCROActiveVersion() ] || {
+			[ constants.FEATURE_CATEGORY_SECURITY ]: [
+				constants.FEATURE_PRODUCT_BACKUP_REALTIME_V2,
+				constants.FEATURE_PRODUCT_SCAN_V2,
+				constants.FEATURE_PRODUCT_ANTISPAM_V2,
+				constants.FEATURE_ACTIVITY_LOG_1_YEAR_V2,
+			],
+			[ constants.FEATURE_CATEGORY_OTHER ]: [
+				constants.FEATURE_PREMIUM_THEMES_V2,
+				constants.FEATURE_VIDEO_HOSTING_V2,
+				constants.FEATURE_SOCIAL_MEDIA_POSTING_V2,
+				constants.FEATURE_COLLECT_PAYMENTS_V2,
+				constants.FEATURE_SITE_MONETIZATION_V2,
+				constants.FEATURE_PRIORITY_SUPPORT_V2,
+			],
+		} ),
+
 	getSignupFeatures: () => [],
 	getHiddenFeatures: () => [
 		constants.FEATURE_JETPACK_BACKUP_REALTIME,
@@ -558,7 +580,10 @@ const getPlanJetpackSecurityRealtimeDetails = () => ( {
 const getPlanJetpackCompleteDetails = () => ( {
 	group: constants.GROUP_JETPACK,
 	type: constants.TYPE_ALL,
-	getTitle: () => translate( 'Jetpack Complete' ),
+	getTitle: () =>
+		getJetpackCROActiveVersion() === 'i5'
+			? translate( 'Complete' )
+			: translate( 'Jetpack Complete' ),
 	getAudience: () => translate(),
 	availableFor: ( plan ) =>
 		[
@@ -573,37 +598,42 @@ const getPlanJetpackCompleteDetails = () => ( {
 	getTagline: () => translate( 'For best-in-class WordPress sites' ),
 	getPlanCompareFeatures: () => [],
 	getPlanCardFeatures: () =>
-		getJetpackCROActiveVersion() === 'v2'
-			? [
-					constants.FEATURE_PLAN_SECURITY_REALTIME,
-					constants.FEATURE_CRM_V2,
-					constants.FEATURE_PRODUCT_SEARCH_V2,
-			  ]
-			: {
-					[ constants.FEATURE_CATEGORY_SECURITY ]: [
-						[
-							constants.FEATURE_SECURITY_REALTIME_V2,
-							[
-								constants.FEATURE_PRODUCT_BACKUP_REALTIME_V2,
-								constants.FEATURE_PRODUCT_SCAN_V2,
-								constants.FEATURE_PRODUCT_ANTISPAM_V2,
-								constants.FEATURE_ACTIVITY_LOG_1_YEAR_V2,
-							],
-						],
+		( {
+			v2: [
+				constants.FEATURE_PLAN_SECURITY_REALTIME,
+				constants.FEATURE_CRM_V2,
+				constants.FEATURE_PRODUCT_SEARCH_V2,
+			],
+			i5: [
+				constants.FEATURE_PLAN_SECURITY_REALTIME,
+				constants.FEATURE_CRM_V2,
+				constants.FEATURE_PRODUCT_SEARCH_V2,
+			],
+		}[ getJetpackCROActiveVersion() ] || {
+			[ constants.FEATURE_CATEGORY_SECURITY ]: [
+				[
+					constants.FEATURE_SECURITY_REALTIME_V2,
+					[
+						constants.FEATURE_PRODUCT_BACKUP_REALTIME_V2,
+						constants.FEATURE_PRODUCT_SCAN_V2,
+						constants.FEATURE_PRODUCT_ANTISPAM_V2,
+						constants.FEATURE_ACTIVITY_LOG_1_YEAR_V2,
 					],
-					[ constants.FEATURE_CATEGORY_PERFORMANCE ]: [
-						constants.FEATURE_PRODUCT_SEARCH_V2,
-						constants.FEATURE_VIDEO_HOSTING_V2,
-					],
-					[ constants.FEATURE_CATEGORY_GROWTH ]: [
-						constants.FEATURE_CRM_V2,
-						constants.FEATURE_SOCIAL_MEDIA_POSTING_V2,
-						constants.FEATURE_COLLECT_PAYMENTS_V2,
-						constants.FEATURE_SITE_MONETIZATION_V2,
-					],
-					[ constants.FEATURE_CATEGORY_DESIGN ]: [ constants.FEATURE_PREMIUM_THEMES_V2 ],
-					[ constants.FEATURE_CATEGORY_OTHER ]: [ constants.FEATURE_PRIORITY_SUPPORT_V2 ],
-			  },
+				],
+			],
+			[ constants.FEATURE_CATEGORY_PERFORMANCE ]: [
+				constants.FEATURE_PRODUCT_SEARCH_V2,
+				constants.FEATURE_VIDEO_HOSTING_V2,
+			],
+			[ constants.FEATURE_CATEGORY_GROWTH ]: [
+				constants.FEATURE_CRM_V2,
+				constants.FEATURE_SOCIAL_MEDIA_POSTING_V2,
+				constants.FEATURE_COLLECT_PAYMENTS_V2,
+				constants.FEATURE_SITE_MONETIZATION_V2,
+			],
+			[ constants.FEATURE_CATEGORY_DESIGN ]: [ constants.FEATURE_PREMIUM_THEMES_V2 ],
+			[ constants.FEATURE_CATEGORY_OTHER ]: [ constants.FEATURE_PRIORITY_SUPPORT_V2 ],
+		} ),
 	getSignupFeatures: () => [],
 	getHiddenFeatures: () => [
 		constants.FEATURE_JETPACK_BACKUP_REALTIME,

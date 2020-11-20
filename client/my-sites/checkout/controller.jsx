@@ -93,16 +93,10 @@ export function checkout( context, next ) {
 				purchaseId={ purchaseId }
 				selectedFeature={ feature }
 				couponCode={ couponCode }
-				isComingFromSignup={ !! context.query.signup }
-				isComingFromGutenboarding={ !! context.query.preLaunch }
-				isGutenboardingCreate={ !! context.query.isGutenboardingCreate }
 				isComingFromUpsell={ !! context.query.upgrade }
 				plan={ plan }
 				selectedSite={ selectedSite }
-				reduxStore={ context.store }
 				redirectTo={ context.query.redirect_to }
-				upgradeIntent={ context.query.intent }
-				clearTransaction={ false }
 				isLoggedOutCart={ isLoggedOutCart }
 				isNoSiteCart={ isNoSiteCart }
 			/>
@@ -195,7 +189,8 @@ export function gsuiteNudge( context, next ) {
 export function upsellNudge( context, next ) {
 	const { receiptId, site } = context.params;
 
-	let upsellType, upgradeItem;
+	let upsellType;
+	let upgradeItem;
 
 	if ( context.path.includes( 'offer-quickstart-session' ) ) {
 		upsellType = 'concierge-quickstart-session';
